@@ -39,14 +39,59 @@
                     <h2 class="fw-bold text-center" style="font-family: Newsreader, serif;font-size: 55px;">Estado de la orden</h2>
                 </div>
             </div>
-            <div class="text-center">
-                <div class="col"><a class="btn btn-primary btn-lg" role="button" style="margin-top: 51px;background: rgb(41,118,47);" href="signup.html">Orden Entregada</a></div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID Orden</th>
+                            <th>Hora</th>
+                            <th>Orden</th>
+                            <th>Estatus</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTable">
+                        <!-- Las filas se generarán dinámicamente desde la base de datos -->
+                    </tbody>
+                </table>
             </div>
-        </div><!-- Start: Articles Cards -->
-        <div class="container py-4 py-xl-5" style="border-radius: 23px;">
-            <div id="dashboardContainer" class="row gy-4 row-cols-1 row-cols-md-2 row-cols-xl-3">
-        </div><!-- End: Articles Cards -->
-    </section><!-- Start: Footer Multi Column -->
+        </div>
+    </section>
+    <script>
+        // Simulación de datos de la base de datos
+        const orders = [
+            { id: 1, hora: "12:00 PM", orden: ["Pizza", "Ensalada", "Refresco"], estatus: "Pendiente" },
+            { id: 2, hora: "12:30 PM", orden: ["Pasta", "Pan de ajo"], estatus: "Pendiente" }
+        ];
+
+        // Renderizar las órdenes en la tabla
+        const ordersTable = document.getElementById('ordersTable');
+        orders.forEach(order => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${order.id}</td>
+                <td>${order.hora}</td>
+                <td>
+                    <ul>
+                        ${order.orden.map(item => `<li>${item}</li>`).join('')}
+                    </ul>
+                </td>
+                <td>${order.estatus}</td>
+                <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.id})">Orden Entregada</button></td>
+            `;
+            ordersTable.appendChild(row);
+        });
+
+        // Función para actualizar el estado de la orden
+        function updateStatus(orderId) {
+            const order = orders.find(o => o.id === orderId);
+            if (order) {
+                order.estatus = "Entregada";
+                alert(`El estado de la orden ${orderId} ha sido actualizado a "Entregada".`);
+                location.reload(); // Recargar la página para reflejar los cambios
+            }
+        }
+    </script>
 
     <footer class="bg-primary-gradient" style="background: rgb(255,255,255);">
         <div class="container py-4 py-lg-5" style="background: rgb(255,255,255);">
