@@ -40,7 +40,6 @@ const mqttClient = mqtt.connect(`ws://${process.env.MQTTHOST}`, {
 
 const topicPOS = 'smartKitchen/POS'
 const topicKitchen = 'smartKitchen/kitchen'
-
 const topicos = [topicPOS, topicKitchen]
 
 mqttClient.on('connect', () => {
