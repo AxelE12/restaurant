@@ -29,8 +29,9 @@ app.listen(port, () =>{
 }) 
 
 // Conexión al broker MQTT
-const mqttClient = mqtt.connect(`ws://${process.env.MQTTHOST}`, {
-    clientId: 'mario',
+const mqttClient = mqtt.connect(`mqtt://${process.env.MQTTHOST}`, {
+    clientId: 'MQTT_Broker',
+
     clean: true,
     reconnectPeriod: 1000
 })
