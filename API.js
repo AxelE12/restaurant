@@ -16,7 +16,6 @@ const plantregister = require('./routes/plantregister')
 const sensordictionary = require('./routes/sensordictionary')
 const reading = require('./routes/reading')
 const watertank = require('./routes/watertank')
-//const userRegister = require ('../front/assets/js/signup')
 
 app.use(cors({
     origin: '*',
@@ -108,27 +107,6 @@ mqttClient.on('error', (err) => {
     console.error('Error en el cliente MQTT:', err.message)
 })
 
-
-
-
-
-
-
-
-
-
-// npm install
-// Función Callback
-// Función que se ejecuta como respuesta a una petición (eventos)
-/*
-// Rutas
-app.use(express.json()) // Middleware para que express entienda JSON
-app.use('/branch', branch)
-*/
-
-// http://localhost:3000/
-// Cualquier método HTTP recibe una ruta y una finción callback
-
 app.use((err, req, res, next) => {
     console.error('Error en el servidor:', err);
     res.status(500).json({ 
@@ -136,4 +114,3 @@ app.use((err, req, res, next) => {
         details: err.message 
     });
 });
-
