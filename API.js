@@ -1,7 +1,4 @@
 
-
-
-
 const express = require('express') 
 const mqtt = require('mqtt') 
 const cors = require('cors')
@@ -91,11 +88,11 @@ mqttClient.on('message', async (receivedTopic, message) => {
     
     try {
         
-        const sql = `INSERT INTO comanda(comandaTipo, status) VALUES (?,?)`;
+        const sql = `INSERT INTO comanda(comandaTipo, status) VALUES (?,?)`
 
-        const params = [comandaTipo, status];
+        const params = [comandaTipo, status]
 
-        const consulta = pool.format(sql, params);
+        const consulta = pool.format(sql, params)
 
         console.log(consulta)
         
@@ -104,26 +101,26 @@ mqttClient.on('message', async (receivedTopic, message) => {
             data.comandaTipo,
             data.status
 
-        ]);
+        ])
 
         console.log('Datos insertados exitosamente:', {
             comandaTipo: data.comandaTipo,
             status: data.sta
 
-        });
+        })
         
     } catch (error) {
-        console.error('Error al insertar los datos en la base de datos:', error.message, data);
+        console.error('Error al insertar los datos en la base de datos:', error.message, data)
     }
-});
+
+})
 
 mqttClient.on('offline', () => {
     console.warn('El cliente MQTT se encuentra offline.')
 })
 
-
 mqttClient.on('reconnect', () => {
-    console.log('Reconectando al broker...');
+    console.log('Reconectando al broker...')
 })
 
 mqttClient.on('error', (err) => {
