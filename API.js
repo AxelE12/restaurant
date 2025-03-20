@@ -21,8 +21,8 @@ app.use(express.json())
 
 
 
-app.use('/POS', POS)
-app.use('kitchen', kitchen)
+app.use('/smartKitchen/POS', POS)
+app.use('/smartKitchen/kitchen', kitchen)
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`) 
