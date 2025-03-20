@@ -26,14 +26,6 @@ app.use(cors({
 app.use(express.json()) 
 
 
-/*
-app.use('/planttype', planttype)  
-app.use('/user', user)  
-app.use('/plantregister', plantregister)  
-app.use('/sensordictionary', sensordictionary)  
-app.use('/reading', reading)  
-app.use('/watertank', watertank)
-*/
 
 app.use('/POS', POS)
 app.use('kitchen', kitchen)
@@ -51,17 +43,6 @@ const mqttClient = mqtt.connect(`ws://${process.env.MQTTHOST}`, {
 
 // Tópico y canal
 
-/*
-const topic = 'hydrosync/humidity1' 
-const topic1 = 'hydrosync/humidity2'
-const topic2 = 'hydrosync/humidity3'
-const topic3 = 'hydrosync/pump1'
-const topic4 = 'hydrosync/pump2'
-const topic5 = 'hydrosync/pump3'
-const topic6 = 'hydrosync/temperature'
-const topic7 = 'hydrosync/distance'
-const topicos = [topic, topic1, topic2, topic3, topic4, topic5, topic6, topic7]
-*/
 
 const topicPOS = 'smartKitchen/POS'
 const topicKitchen = 'smartKitchen/kitchen'
