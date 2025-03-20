@@ -5,17 +5,12 @@ const cors = require('cors')
 const pool = require('./helpers/mysql-config')
 require('dotenv').config() 
 const port = process.env.PORT
-
 const app = express()
  
 // Pendiente.
 
-const planttype = require('./routes/planttype') 
-const user = require('./routes/user') 
-const plantregister = require('./routes/plantregister') 
-const sensordictionary = require('./routes/sensordictionary')
-const reading = require('./routes/reading')
-const watertank = require('./routes/watertank')
+const POS = require ('./routes/POS')
+const kitchen = require('./routes/kitchen')
 
 app.use(cors({
     origin: '*',
