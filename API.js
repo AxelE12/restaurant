@@ -31,7 +31,8 @@ app.listen(port, () =>{
 // Conexión al broker MQTT
 const mqttClient = mqtt.connect(`mqtt://${process.env.MQTTHOST}`, {
     clientId: 'MQTT_Broker',
-
+    username: process.env.MQTTUSER, // Usuario desde .env
+    password: process.env.MQTTPASS,  // Contraseña desde .env
     clean: true,
     reconnectPeriod: 1000
 })
@@ -80,7 +81,7 @@ mqttClient.on('message', async (receivedTopic, message) => {
 
         console.log('Datos insertados exitosamente:', {
             comandaTipo: data.comandaTipo,
-            status: data.sta
+            status: data.status
 
         })
         
