@@ -48,7 +48,7 @@ const getKitchenOrder = async (req, res) => {
 } 
 // Actualizar Estatus de Orden
 
-const updateComandaa = async (req,res) => {
+const updateComanda = async (req,res) => {
     const { idComanda } = req.params
     const { estado } = req.body
 
@@ -71,5 +71,5 @@ module.exports = {
     getAllKitchenOrders,
     getKitchenOrder,
     createOrder,
-    updateComandaa
+    updateComanda
 }
