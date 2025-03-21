@@ -39,7 +39,6 @@ const mqttClient = mqtt.connect(`mqtt://${process.env.MQTTHOST}`, {
 
 // Tópico y canal
 
-
 const topicPOS = 'smartKitchen/POS'
 const topicKitchen = 'smartKitchen/Kitchen'
 const topicos = [topicPOS, topicKitchen]
