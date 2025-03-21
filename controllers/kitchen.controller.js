@@ -14,6 +14,7 @@ const createOrder = async (req,res) => {
             'INSERT INTO comandas (alimento, estado, hora) VALUES (?,?,?)',
             [alimento, estado, hora]
         )
+
         res.status(201).json({ message: 'Order Created', id: result.insertId })
     } catch(error) {
         res.status(500).json({ error: error.message })
@@ -44,7 +45,7 @@ const getKitchenOrder = async (req, res) => {
         res.status(500).json({ error: error.message })
     }
 
-    
+} 
 // Actualizar Estatus de Orden
 
 const updateComandaa = async (req,res) => {
@@ -64,7 +65,7 @@ const updateComandaa = async (req,res) => {
         res.status(500).json({ error: error.message })
     }
   }
-}
+
 
 module.exports = {
     getAllKitchenOrders,

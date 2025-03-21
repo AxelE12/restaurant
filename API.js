@@ -42,6 +42,7 @@ const topicPOS = 'smartKitchen/POS'
 const topicKitchen = 'smartKitchen/Kitchen'
 const topicos = [topicPOS, topicKitchen]
 
+
 mqttClient.on('connect', () => {
     console.log(`Conectado al broker MQTT.`)
     mqttClient.subscribe(topicos, {qos: 0}, (err) => {
@@ -57,32 +58,49 @@ mqttClient.on('connect', () => {
 
 mqttClient.on('message', async (receivedTopic, message) => {
 
-    const data = JSON.parse(message.toString())
-    console.log(`Mensaje recibido en ${receivedTopic}:`, data)
+    const data = JSON.parse(message.toString());
+    console.log(`Mensaje recibido en ${receivedTopic}:`, data);
 
     try {
-        
-        const sql = `INSERT INTO comandas(alimento, estado, hora) VALUES (?,?,?)`
+        // SQL para insertar datos en la base de datos
+        const sql = `INSERT INTO comandas(alimento, estado, hora) VALUES (?,?,?)`;
 
-        const params = [data.alimento, data.estado, data.hora]
+        const params = [data.alimento, data.estado, data.hora];
 
-        const consulta = pool.format(sql, params)
+        const consulta = pool.format(sql, params);
 
-        console.log(consulta)
-        
-        const [result] = await pool.query(sql, params)
+        console.log(consulta);
+
+        // Insertar los datos en la base de datos
+        const [result] = await pool.query(sql, params);
 
         console.log('Datos insertados exitosamente:', {
             alimento: data.alimento,
-            status: data.estado,
+            estado: data.estado,
             hora: data.hora
-        })
-        
+        });
+
+        // Después de insertar los datos, publicar en el tópico MQTT correspondiente
+        const orderData = {
+            alimento: data.alimento,
+            estado: data.estado,
+            hora: data.hora
+        };
+
+        mqttClient.publish('smartKitchen/Kitchen', JSON.stringify(orderData), { qos: 0 }, (err) => {
+            if (err) {
+                console.error('Error al publicar en MQTT:', err.message);
+            } else {
+                console.log('Mensaje publicado en el tópico smartKitchen/Kitchen:', orderData);
+            }
+        });
+
     } catch (error) {
-        console.error('Error al insertar los datos en la base de datos:', error.message, data)
+        console.error('Error al insertar los datos en la base de datos:', error.message, data);
     }
 
-})
+});
+
 
 mqttClient.on('offline', () => {
     console.warn('El cliente MQTT se encuentra offline.')
