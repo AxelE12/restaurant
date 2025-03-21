@@ -52,7 +52,7 @@
                     <thead>
                         <tr>
                             <th>ID Orden</th>
-                            <th>Hora</th>
+                            <th>Fecha y hora</th>
                             <th>Orden</th>
                             <th>Estatus</th>
                             <th>Acción</th>
@@ -67,40 +67,40 @@
     </section>
 
     <script>
-        // Simulación de datos de la base de datos
-        const orders = [
-            { id: 1, hora: "12:00 PM", orden: ["Pizza", "Ensalada", "Refresco"], estatus: "Pendiente" },
-            { id: 2, hora: "12:30 PM", orden: ["Pasta", "Pan de ajo"], estatus: "Pendiente" }
-        ];
+        async function cargarComandas(){
+            const response = await fetch('http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/orders');
+            const orders = await response.json();
+            console.log(orders);
 
-        // Renderizar las órdenes en la tabla
-        const ordersTable = document.getElementById('ordersTable');
-        orders.forEach(order => {
-            const row = document.createElement('tr'); // Crear una nueva fila
-            row.innerHTML = `
-                <td>${order.id}</td> <!-- ID de la orden -->
-                <td>${order.hora}</td> <!-- Hora de la orden -->
-                <td>
-                    <ul>
-                        <!-- Lista de elementos de la orden -->
-                        ${order.orden.map(item => `<li>${item}</li>`).join('')}
-                    </ul>
-                </td>
-                <td>${order.estatus}</td> <!-- Estatus de la orden -->
-                <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.id})">Orden Entregada</button></td> <!-- Botón para actualizar el estado -->
-            `;
-            ordersTable.appendChild(row); // Agregar la fila a la tabla
-        });
+            const ordersTable = document.getElementById('ordersTable');
+            orders.forEach(order => {
+                const row = document.createElement('tr'); 
 
-        // Función para actualizar el estado de la orden
-        function updateStatus(orderId) {
-            const order = orders.find(o => o.id === orderId); // Buscar la orden por ID
-            if (order) {
-                order.estatus = "Entregada"; // Actualizar el estatus
-                alert(`El estado de la orden ${orderId} ha sido actualizado a "Entregada".`);
-                location.reload(); // Recargar la página para reflejar los cambios
+                row.innerHTML = `
+                    <td>${order.idComanda}</td> 
+                    <td>${order.hora}</td>
+                    <td>
+                        <ul>
+                            ${order.alimento.split(',').map(item => `<li>${item.trim()}</li>`).join('')}
+                        </ul>
+                    </td>
+                    <td>${order.estado}</td>
+                    <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.idComanda})">Orden Entregada</button></td>
+                `;
+                ordersTable.appendChild(row); 
+            });
+
+            // Función para actualizar el estado de la orden
+            function updateStatus(orderId) {
+                const order = orders.find(o => o.idComanda === orderId);
+                if (order) {
+                    order.estado = "Entregada"; 
+                    alert(`El estado de la orden ${orderId} ha sido actualizado a "Entregada".`);
+                }
             }
         }
+
+        cargarComandas();
     </script>
 
     <!-- Footer -->
