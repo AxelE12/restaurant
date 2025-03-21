@@ -67,6 +67,7 @@
     </section>
 
     <script>
+        //Cargar las comandas desde la base de datos
         async function cargarComandas(){
             const response = await fetch('http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/orders');
             const orders = await response.json();
@@ -90,7 +91,7 @@
                 ordersTable.appendChild(row); 
             });
 
-            // Función para actualizar el estado de la orden
+            //Actualizar el estado de la orden
             function updateStatus(orderId) {
                 const order = orders.find(o => o.idComanda === orderId);
                 if (order) {

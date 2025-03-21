@@ -96,18 +96,19 @@
             console.log('Lista de clics:', clickList);
             alert(`Orden enviada: ${clickList}`); // Mostrar los elementos seleccionados
 
+            //Hora y fecha en la que se registra la comanda
             const hora_comanda = new Date().toLocaleString('en-US', {timeZone: 'America/Mexico_City'}).toString(); // Obtener la hora actual
             console.log(hora_comanda);
 
 
-            // Enviar los datos al servidor
+            //Registrar una comanda
             try {
                 const response = await fetch('http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/POS/order', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ alimento: clickList.join(', '), estado: 'activa', hora: hora_comanda}) // Enviar la lista como JSON
+                    body: JSON.stringify({ alimento: clickList.join(', '), estado: 'activa', hora: hora_comanda})
                 });
 
                 if (response.ok) {
