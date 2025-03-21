@@ -30,17 +30,17 @@ const getKitchenOrder = async (req, res) => {
     
 // Actualizar Estatus de Orden
 
-const updateOrder = async (req,res) => {
-    const { id } =req.params
-    const { orderID } = req.body
+const updateComanda = async (req,res) => {
+    const { idComanda } = req.params
+    const { estado } = req.body
 
     try {
         const result = await pool.query (
-            'UPDATE comandas SET estado = ?'
-            [orderStatus]
+            'UPDATE comandas SET estado = ? WHERE idComanda = ?',
+            [estado, idComanda]
         )
         if (result.affectedRows === 0) {
-            return res.statis(404).json({ message: "OrderID Not Found "})
+            return res.status(404).json({ message: "OrderID Not Found "})
         }
         res.status(200).json({ message: "OrderID Updated " })
     } catch(error) {
@@ -51,6 +51,6 @@ const updateOrder = async (req,res) => {
 
 module.exports = {
     getAllKitchenOrders,
-    getKitchenOrder
-    //updateOrder
+    getKitchenOrder,
+    updateComanda
 }
