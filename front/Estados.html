@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Estado pedidos - Restaurante</title>
+    <script src="https://unpkg.com/paho-mqtt@1.1.0/mqtt.min.js"></script>
     <meta name="description" content="Hydro Sync IoT">
     <!-- Estilos personalizados -->
     <link rel="stylesheet" href="assets/css/Inter.css?h=1653f77a874b8c719b7930c16f024615">
@@ -13,7 +14,6 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=2ef8dee5f11530c7b88bfc37301e4638">
     <script src="assets/js/dashboard.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/mqtt.min.js"></script>
 </head>
 
 <body>
@@ -69,7 +69,7 @@
 
     <script>
         // Conectar al broker MQTT
-        const client = new Paho.MQTT.Client("localhost", 9001, "orderClient123");
+        const client = new Paho.MQTT.Client("34.228.215.88", 8080, "orderClient123");
 
         client.onConnectionLost = function (responseObject) {
             console.log("Conexión perdida: " + responseObject.errorMessage);
@@ -116,11 +116,11 @@
             });
 
             //Actualizar el estado de la orden
-            function updateStatus(orderId) {
-                const order = orders.find(o => o.idComanda === orderId);
+            function updateStatus(idComandad) {
+                const order = idComanda
                 if (order) {
                     order.estado = "Entregada"; 
-                    alert(`El estado de la orden ${orderId} ha sido actualizado a "Entregada".`);
+                    alert(`El estado de la orden ${idComanda} ha sido actualizado a "Entregada".`);
                 }
             }
         }
