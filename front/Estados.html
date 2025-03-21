@@ -64,6 +64,35 @@
 
     <script>
 
+                // Mueve la función updateStatus fuera de cargarComandas para que esté accesible globalmente
+        async function updateStatus(idComanda, button) {
+            try {
+                // Realizar la actualización del estado de la orden a "Entregada" en la base de datos
+                const response = await fetch(`http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/comanda/${idComanda}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        estado: "Cerrada"
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Si la actualización es exitosa, eliminar la fila de la tabla
+                    alert(`El estado de la orden ${idComanda} ha sido actualizado a "Entregada".`);
+                    // Aquí se usa closest para encontrar la fila de la tabla
+                    const row = button.closest('tr'); 
+                } else {
+                    alert(`Error al actualizar el estado de la orden ${idComanda}: ${result.error}`);
+                }
+            } catch (error) {
+                console.error('Error al actualizar el estado de la orden:', error);
+            }
+        }
+
         // Cargar las comandas desde la base de datos
         async function cargarComandas(){
             const response = await fetch('http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/orders');
@@ -83,42 +112,15 @@
                         </ul>
                     </td>
                     <td>${order.estado}</td>
-                    <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.idComanda})">Orden Entregada</button></td>
+                    <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.idComanda}, this)">Orden Entregada</button></td>
                 `;
                 ordersTable.appendChild(row); 
             });
 
-            //Actualizar el estado de la orden
-            async function updateStatus(idComanda, button) {
-            try {
-                // Realizar la actualización del estado de la orden a "Entregada" en la base de datos
-                const response = await fetch(`http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/comanda/${idComanda}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        estado: "Cerrada"
-                    })
-                });
-
-                const result = await response.json();
-
-                if (response.ok) {
-                    // Si la actualización es exitosa, eliminar la fila de la tabla
-                    alert(`El estado de la orden ${idComanda} ha sido actualizado a "Entregada".`);
-                    const row = button.closest('tr'); 
-                    row.remove(); 
-                } else {
-                    alert(`Error al actualizar el estado de la orden ${idComanda}: ${result.error}`);
-                }
-            } catch (error) {
-                console.error('Error al actualizar el estado de la orden:', error);
-            }
-            }
         }
         // Cargar las comandas inicialmente
         cargarComandas();
+
     </script>
 
     <!-- Footer -->
