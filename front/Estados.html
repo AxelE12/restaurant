@@ -13,6 +13,7 @@
     <!-- Bootstrap -->
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=2ef8dee5f11530c7b88bfc37301e4638">
     <script src="assets/js/dashboard.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/paho-mqtt/1.1.0/mqtt.min.js"></script>
 </head>
 
 <body>
@@ -67,7 +68,30 @@
     </section>
 
     <script>
-        //Cargar las comandas desde la base de datos
+        // Conectar al broker MQTT
+        const client = new Paho.MQTT.Client("localhost", 9001, "orderClient123");
+
+        client.onConnectionLost = function (responseObject) {
+            console.log("Conexión perdida: " + responseObject.errorMessage);
+        };
+
+        client.onMessageArrived = function (message) {
+            const orderData = JSON.parse(message.payloadString);
+            actualizarTablaOrdenes(orderData);
+        };
+
+        // Conectar y suscribirse al tópico de las órdenes actualizadas
+        client.connect({
+            onSuccess: function () {
+                console.log('Conectado a MQTT');
+                client.subscribe('smartKitchen/kitchen');
+            },
+            onFailure: function (error) {
+                console.error('Error de conexión: ' + error.errorMessage);
+            }
+        });
+
+        // Cargar las comandas desde la base de datos
         async function cargarComandas(){
             const response = await fetch('http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/orders');
             const orders = await response.json();
@@ -101,6 +125,38 @@
             }
         }
 
+        // Función para actualizar la tabla cuando el estado de una orden cambia
+        function actualizarTablaOrdenes(orderData) {
+            const ordersTable = document.getElementById('ordersTable');
+            let updated = false;
+
+            for (let row of ordersTable.rows) {
+                if (row.cells[0].innerText === orderData.idComanda.toString()) {
+                    row.cells[3].innerText = orderData.estado;
+                    updated = true;
+                    break;
+                }
+            }
+
+            // Si no se ha encontrado la orden, agregarla a la tabla
+            if (!updated) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${orderData.idComanda}</td>
+                    <td>${orderData.hora}</td>
+                    <td>
+                        <ul>
+                            ${orderData.alimento.split(',').map(item => `<li>${item.trim()}</li>`).join('')}
+                        </ul>
+                    </td>
+                    <td>${orderData.estado}</td>
+                    <td><button class="btn btn-success btn-sm">Orden Entregada</button></td>
+                `;
+                ordersTable.appendChild(row);
+            }
+        }
+
+        // Cargar las comandas inicialmente
         cargarComandas();
     </script>
 
