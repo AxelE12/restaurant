@@ -13,7 +13,7 @@ router.get('/order/:id', controller.getKitchenOrder)
 router.post('/orders', controller.createOrder)
 
 //Ruta para actualizar una comanda
-router.put('/comanda/:id', controller.updateComanda)
+router.put('/comanda/:idComanda', controller.updateComanda)
 
 module.exports = router
 
