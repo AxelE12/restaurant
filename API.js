@@ -29,7 +29,7 @@ app.listen(port, () =>{
 }) 
 
 // Conexión al broker MQTT
-const mqttClient = mqtt.connect(`mqtt://${process.env.MQTTHOST}`, {
+const mqttClient = mqtt.connect(`ws://${process.env.MQTTHOST}`, {
     clientId: 'MQTT_Broker',
     username: process.env.MQTTUSER, // Usuario desde .env
     password: process.env.MQTTPASS,  // Contraseña desde .env
