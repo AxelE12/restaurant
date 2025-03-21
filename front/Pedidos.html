@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Pedidos Restaurante</title>
+    <meta name="description" content="Hydro Sync IoT">
+    <!-- Estilos personalizados -->
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css?h=2ef8dee5f11530c7b88bfc37301e4638">
+    <link rel="stylesheet" href="assets/css/Logo.css?h=6f5180a23e7329f620549fa0ccb4bfc8">
+</head>
+
+<body>
+    <!-- Navbar principal -->
+    <nav class="navbar navbar-expand-md sticky-top navbar-shrink py-3" id="mainNav" style="background: rgb(255,255,255);">
+        <div class="container">
+            <!-- Logo del restaurante -->
+            <img src="./assets/img/Imagen%20ticket.jpg" alt="Logo" style="width: 66px;">
+            <!-- Botón para colapsar el menú en pantallas pequeñas -->
+            <button data-bs-toggle="collapse" class="navbar-toggler" data-bs-target="#navcol-1">
+                <span class="visually-hidden">Toggle navigation</span>
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navcol-1">
+                <!-- Enlaces de navegación -->
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link active" href="Pedidos.html" style="font-family: 'Libre Franklin', sans-serif;font-weight: bold;font-size: 20px;margin-left: 0px;position: relative;">Pedidos</a></li>
+                    <li class="nav-item"><a class="nav-link" href="Estados.html" style="margin-bottom: -4px;font-family: 'Libre Franklin', sans-serif;font-size: 20px;font-weight: bold;position: relative;">Estados</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sección principal -->
+    <header class="bg-primary-gradient" style="background: rgb(255,255,255);">
+        <div class="container pt-4 pt-xl-5" style="width: 1171px;">
+            <div class="row pt-5" style="background: rgb(255,255,255);">
+                <div class="col-md-8 col-xl-11 text-center text-md-start mx-auto">
+                    <div></div>
+                    <div class="text-center">
+                        <div class="col-md-8 col-xl-6 text-center mx-auto">
+                            <!-- Título principal -->
+                            <h1 style="font-family: Newsreader, serif;font-size: 75.88px;height: 241.164px;margin: -18px;margin-bottom: -120px;"><a href="#"></a>Restaurante</h1>
+                            <h2 class="fw-bold text-center" style="font-family: Newsreader, serif;font-size: 55px;">Crea tu orden</h2>
+                        </div>
+                        <!-- Botones para seleccionar elementos del menú -->
+                        <div class="vstack">
+                            <div class="row">
+                                <div class="col"><a class="btn btn-primary btn-lg track-click" role="button" style="margin-top: 51px;background: rgb(149, 86, 5);" data-item="Hamburguesa">Hamburguesa</a></div>
+                                <div class="col"><a class="btn btn-primary btn-lg track-click" role="button" style="margin-top: 51px;background: rgb(152, 134, 16);" data-item="Papas">Papas</a></div>
+                                <div class="col"><a class="btn btn-primary btn-lg track-click" role="button" style="margin-top: 51px;background: rgb(216, 138, 42);" data-item="Tacos">Tacos</a></div>
+                                <div class="col"><a class="btn btn-primary btn-lg track-click" role="button" style="margin-top: 51px;background: rgb(197, 0, 0);" data-item="Refresco">Refresco</a></div>
+                            </div>
+                            <!-- Botón para enviar la orden -->
+                            <div class="col"><a class="btn btn-primary btn-lg" role="button" style="margin-top: 51px;background: rgb(41,118,47);" id="send-order">Enviar orden</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Sección vacía para contenido adicional -->
+    <section style="background: rgb(255,255,255);">
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary-gradient" style="background: rgb(255,255,255);">
+        <div class="container py-4 py-lg-5" style="background: rgb(255, 255, 255);">
+            <hr>
+            <div class="text-muted d-flex justify-content-between align-items-center pt-3">
+                <p class="mb-0">Copyright © 2025 Restaurante</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Script para manejar la lógica de los pedidos -->
+    <script>
+        const clickList = []; // Lista para almacenar los elementos seleccionados
+
+        // Registrar clics en los botones de los elementos del menú
+        document.querySelectorAll('.track-click').forEach(button => {
+            button.addEventListener('click', () => {
+                const itemName = button.getAttribute('data-item'); // Obtener el nombre del elemento
+                clickList.push(itemName); // Agregar el elemento a la lista
+                console.log(`Agregado: ${itemName}`);
+            });
+        });
+
+        // Enviar la lista de elementos seleccionados al hacer clic en "Enviar orden"
+        document.getElementById('send-order').addEventListener('click', async () => {
+            console.log('Lista de clics:', clickList);
+            alert(`Orden enviada: ${clickList}`); // Mostrar los elementos seleccionados
+
+            //Hora y fecha en la que se registra la comanda
+            const hora_comanda = new Date().toLocaleString('en-US', {timeZone: 'America/Mexico_City'}).toString(); // Obtener la hora actual
+            console.log(hora_comanda);
+
+
+            //Registrar una comanda
+            try {
+                const response = await fetch('http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ alimento: clickList.join(', '), estado: 'Activa', hora: hora_comanda})
+                });
+
+                if (response.ok) {
+                    console.log('Orden enviada exitosamente a la base de datos.');
+                    alert('Orden registrada en la base de datos.');
+                } else {
+                    console.error('Error al enviar la orden:', response.statusText);
+                    alert('Hubo un error al registrar la orden.');
+                }
+            } catch (error) {
+                console.error('Error de red:', error);
+                alert('No se pudo conectar con el servidor.');
+            }
+        });
+    </script>
+</body>
+</html>
