@@ -62,9 +62,9 @@ mqttClient.on('message', async (receivedTopic, message) => {
 
     try {
         
-        const sql = `INSERT INTO comandas(alimento, estado) VALUES (?,?)`
+        const sql = `INSERT INTO comandas(alimento, estado, hora) VALUES (?,?,?)`
 
-        const params = [data.alimento, data.estado]
+        const params = [data.alimento, data.estado, data.hora]
 
         const consulta = pool.format(sql, params)
 
@@ -74,7 +74,8 @@ mqttClient.on('message', async (receivedTopic, message) => {
 
         console.log('Datos insertados exitosamente:', {
             alimento: data.alimento,
-            status: data.estado
+            status: data.estado,
+            hora: data.hora
         })
         
     } catch (error) {
