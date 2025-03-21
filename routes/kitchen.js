@@ -12,7 +12,8 @@ router.get('/order/:id', controller.getKitchenOrder)
 //Ruta para crear una comanda
 router.post('/orders', controller.createOrder)
 
-router.post('/updateComanda', controller.updateComanda)
+//Ruta para actualizar una comanda
+router.post('/comanda', controller.updateComanda)
 
 module.exports = router
 
