@@ -4,7 +4,7 @@ const cors = require('cors')
 const pool = require('./helpers/mysql-config')
 require('dotenv').config()
 
-const port = process.env.PORT
+const port = process.env.PORT || 3000
 const app = express()
  
 // Pendiente.
@@ -20,8 +20,8 @@ app.use(cors({
 app.use(express.json()) 
 
 
-app.use(POS)
-app.use(kitchen)
+app.use('/smartKitchen/POS', POS)
+app.use('/smartKitchen/kitchen', kitchen)
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`) 
@@ -59,7 +59,7 @@ mqttClient.on('message', async (receivedTopic, message) => {
 
     const data = JSON.parse(message.toString())
     console.log(`Mensaje recibido en ${receivedTopic}:`, data)
-    
+
     try {
         
         const sql = `INSERT INTO comandas(alimento, estado) VALUES (?,?)`
@@ -70,17 +70,11 @@ mqttClient.on('message', async (receivedTopic, message) => {
 
         console.log(consulta)
         
-        const [result] = await pool.query(sql, [
-
-            data.alimento,
-            data.estado
-
-        ])
+        const [result] = await pool.query(sql, params)
 
         console.log('Datos insertados exitosamente:', {
             alimento: data.alimento,
             status: data.estado
-
         })
         
     } catch (error) {

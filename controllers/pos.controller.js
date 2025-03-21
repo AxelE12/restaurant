@@ -5,12 +5,12 @@ const pool = require('../helpers/mysql-config')
 const createOrder = async (req,res) => {
     const {alimento, estado} = req.body
 
-    if ( !orderType || !time || estado ) {
+    if ( !alimento || !estado ) {
         return res.status(400).json( {error: 'Ingresar Todos Los Datos' })
     }
     try {
         const result = await pool.query (
-            'INSERT INTO comandas (alimento, estado) VALUES (?,?)'
+            'INSERT INTO comandas (alimento, estado) VALUES (?,?)',
             [alimento, estado]
         )
         res.status(201).json({ message: 'Order Created', id: result.insertId })
