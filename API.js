@@ -1,9 +1,9 @@
-
 const express = require('express') 
 const mqtt = require('mqtt') 
 const cors = require('cors')
 const pool = require('./helpers/mysql-config')
-require('dotenv').config() 
+require('dotenv').config()
+
 const port = process.env.PORT
 const app = express()
  
@@ -65,7 +65,7 @@ mqttClient.on('message', async (receivedTopic, message) => {
         
         const sql = `INSERT INTO comandas(alimento, estado) VALUES (?,?)`
 
-        const params = [alimento, estado]
+        const params = [data.alimento, data.estado]
 
         const consulta = pool.format(sql, params)
 
