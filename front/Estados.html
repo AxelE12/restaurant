@@ -68,28 +68,6 @@
     </section>
 
     <script>
-        // Conectar al broker MQTT
-        const client = new Paho.MQTT.Client("34.228.215.88", 8080, "orderClient123");
-
-        client.onConnectionLost = function (responseObject) {
-            console.log("Conexión perdida: " + responseObject.errorMessage);
-        };
-
-        client.onMessageArrived = function (message) {
-            const orderData = JSON.parse(message.payloadString);
-            actualizarTablaOrdenes(orderData);
-        };
-
-        // Conectar y suscribirse al tópico de las órdenes actualizadas
-        client.connect({
-            onSuccess: function () {
-                console.log('Conectado a MQTT');
-                client.subscribe('smartKitchen/kitchen');
-            },
-            onFailure: function (error) {
-                console.error('Error de conexión: ' + error.errorMessage);
-            }
-        });
 
         // Cargar las comandas desde la base de datos
         async function cargarComandas(){
@@ -116,46 +94,34 @@
             });
 
             //Actualizar el estado de la orden
-            function updateStatus(idComandad) {
-                const order = idComanda
-                if (order) {
-                    order.estado = "Entregada"; 
+            async function updateStatus(idComanda, button) {
+            try {
+                // Realizar la actualización del estado de la orden a "Entregada" en la base de datos
+                const response = await fetch(`http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/updateStatus/${idComanda}`, {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        estado: "Entregada"
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Si la actualización es exitosa, eliminar la fila de la tabla
                     alert(`El estado de la orden ${idComanda} ha sido actualizado a "Entregada".`);
+                    const row = button.closest('tr'); 
+                    row.remove(); 
+                } else {
+                    alert(`Error al actualizar el estado de la orden ${idComanda}: ${result.error}`);
                 }
+            } catch (error) {
+                console.error('Error al actualizar el estado de la orden:', error);
+            }
             }
         }
-
-        // Función para actualizar la tabla cuando el estado de una orden cambia
-        function actualizarTablaOrdenes(orderData) {
-            const ordersTable = document.getElementById('ordersTable');
-            let updated = false;
-
-            for (let row of ordersTable.rows) {
-                if (row.cells[0].innerText === orderData.idComanda.toString()) {
-                    row.cells[3].innerText = orderData.estado;
-                    updated = true;
-                    break;
-                }
-            }
-
-            // Si no se ha encontrado la orden, agregarla a la tabla
-            if (!updated) {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${orderData.idComanda}</td>
-                    <td>${orderData.hora}</td>
-                    <td>
-                        <ul>
-                            ${orderData.alimento.split(',').map(item => `<li>${item.trim()}</li>`).join('')}
-                        </ul>
-                    </td>
-                    <td>${orderData.estado}</td>
-                    <td><button class="btn btn-success btn-sm">Orden Entregada</button></td>
-                `;
-                ordersTable.appendChild(row);
-            }
-        }
-
         // Cargar las comandas inicialmente
         cargarComandas();
     </script>
