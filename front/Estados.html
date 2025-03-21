@@ -82,18 +82,21 @@
                             ${order.alimento.split(',').map(item => `<li>${item.trim()}</li>`).join('')}
                         </ul>
                     </td>
-                    <td>${order.estado}</td>
-                    <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.idComanda})">Orden Entregada</button></td>
+                    <td>${order.estado}</td> <!-- Mostrar estado como texto simple -->
+                    <td><button class="btn btn-success btn-sm" onclick="updateStatus(${order.idComanda}, this)">Orden Entregada</button></td>
                 `;
                 ordersTable.appendChild(row); 
             });
+        }
 
-            //Actualizar el estado de la orden
-            async function updateStatus(idComanda, button) {
+        // Actualizar el estado de la orden
+        async function updateStatus(idComanda, button) {
             try {
-                // Realizar la actualización del estado de la orden a "Entregada" en la base de datos
-                const response = await fetch(`http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/updateStatus/${idComanda}`, {
-                    method: 'PATCH',
+                const url = `http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/comanda/${idComanda}`;
+
+                // Realizar la solicitud para actualizar el estado de la orden
+                const response = await fetch(url, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
@@ -102,21 +105,49 @@
                     })
                 });
 
-                const result = await response.json();
+                // Depurar la respuesta del servidor
+                console.log(`Respuesta del servidor para la orden ${idComanda}:`, response);
 
-                if (response.ok) {
-                    // Si la actualización es exitosa, eliminar la fila de la tabla
-                    alert(`El estado de la orden ${idComanda} ha sido actualizado a "Entregada".`);
-                    const row = button.closest('tr'); 
-                    row.remove(); 
-                } else {
-                    alert(`Error al actualizar el estado de la orden ${idComanda}: ${result.error}`);
+                // Manejar errores HTTP
+                if (response.status === 404) {
+                    mostrarMensajeError(`El endpoint o la orden con ID ${idComanda} no existe en el servidor.`);
+                    return;
+                } else if (!response.ok) {
+                    mostrarMensajeError(`Error al actualizar la orden: ${response.status} ${response.statusText}`);
+                    return;
                 }
+
+                // Intentar parsear la respuesta como JSON
+                let result;
+                try {
+                    result = await response.json();
+                    console.log(`Resultado del servidor para la orden ${idComanda}:`, result);
+                } catch {
+                    mostrarMensajeError('La respuesta del servidor no es un JSON válido.');
+                    return;
+                }
+
+                // Mostrar mensaje de éxito y eliminar la fila
+                mostrarMensajeExito(`El estado de la orden ${idComanda} ha sido actualizado a "Entregada".`);
+                const row = button.closest('tr');
+                const statusCell = row.querySelector('td:nth-child(4)'); // Selecciona la celda de estado
+                statusCell.textContent = "Entregada";
             } catch (error) {
                 console.error('Error al actualizar el estado de la orden:', error);
-            }
+                mostrarMensajeError('Ocurrió un error inesperado al actualizar la orden.');
             }
         }
+
+        // Mostrar mensaje de error en la interfaz
+        function mostrarMensajeError(mensaje) {
+            alert(`Error: ${mensaje}`);
+        }
+
+        // Mostrar mensaje de éxito en la interfaz
+        function mostrarMensajeExito(mensaje) {
+            alert(mensaje);
+        }
+
         // Cargar las comandas inicialmente
         cargarComandas();
     </script>
