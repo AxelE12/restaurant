@@ -92,8 +92,8 @@
             async function updateStatus(idComanda, button) {
             try {
                 // Realizar la actualización del estado de la orden a "Entregada" en la base de datos
-                const response = await fetch(`http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/updateStatus/${idComanda}`, {
-                    method: 'PATCH',
+                const response = await fetch(`http://restaurant-env.eba-ath8xwp7.us-east-1.elasticbeanstalk.com/smartKitchen/kitchen/comanda/${idComanda}`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
