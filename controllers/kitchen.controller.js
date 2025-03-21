@@ -3,7 +3,7 @@ const pool = require ('../helpers/mysql-config')
 
 // Obtener todas las órdenes
 
-const getKitchenAllOrders = async (req, res) => {
+const getAllKitchenOrders = async (req, res) => {
     try{
         const [rows] = await pool.query ('SELECT * FROM comandas')
         res.status(200).json(rows)
@@ -50,7 +50,7 @@ const updateOrder = async (req,res) => {
 }
 
 module.exports = {
-    getKitchenAllOrders,
-    getKitchenOrder,
-    updateOrder
+    getAllKitchenOrders,
+    getKitchenOrder
+    //updateOrder
 }

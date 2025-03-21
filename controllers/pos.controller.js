@@ -5,7 +5,7 @@ const pool = require('../helpers/mysql-config')
 const createOrder = async (req,res) => {
     const {alimento, estado} = req.body
 
-    if ( !orderType || !time || !status ) {
+    if ( !orderType || !time || estado ) {
         return res.status(400).json( {error: 'Ingresar Todos Los Datos' })
     }
     try {
@@ -19,3 +19,6 @@ const createOrder = async (req,res) => {
     }
 }
 
+module.exports = { 
+    createOrder 
+}

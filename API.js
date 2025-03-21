@@ -20,9 +20,8 @@ app.use(cors({
 app.use(express.json()) 
 
 
-
-app.use('/smartKitchen/POS', POS)
-app.use('/smartKitchen/kitchen', kitchen)
+app.use(POS)
+app.use(kitchen)
 
 app.listen(port, () =>{
     console.log(`Server is running on port ${port}`) 
