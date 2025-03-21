@@ -70,5 +70,6 @@ const updateComandaa = async (req,res) => {
 module.exports = {
     getAllKitchenOrders,
     getKitchenOrder,
-    createOrder
+    createOrder,
+    updateComandaa
 }
